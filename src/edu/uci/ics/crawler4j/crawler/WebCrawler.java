@@ -96,7 +96,7 @@ public class WebCrawler implements Runnable {
 	 * and crawling can be stopped.
 	 */
 	private boolean isWaitingForNewURLs;
-
+	
 	private String schedulingtype;
 
 	/**
@@ -178,7 +178,8 @@ public class WebCrawler implements Runnable {
 			} else {
 				for (WebURL curURL : assignedURLs) {
 					if (curURL != null) {
-						processPage(curURL);
+						dfsPage(curURL);
+						System.out.println("Processed : " + curURL.getDocid());
 						frontier.setProcessed(curURL);
 					}
 					if (myController.isShuttingDown()) {
@@ -214,7 +215,56 @@ public class WebCrawler implements Runnable {
 	 */
 	public void visit(Page page) {
 	}
-
+	private int dfsPage(WebURL curURL){
+		if (curURL == null) {
+			return -1;
+		}
+		if(curURL.getDepth() == myController.getConfig().getMaxDepthOfCrawling()){
+			System.out.println("We hit the bumb");
+		}
+		else{
+			curURL.setStatus(1);
+			PageFetchResult fetchResult = null;
+			fetchResult = pageFetcher.fetchHeader(curURL);
+			Page page = new Page(curURL);
+			int docid = curURL.getDocid();
+			if (fetchResult.fetchContent(page) && parser.parse(page, curURL.getURL())) {
+				ParseData parseData = page.getParseData();
+				if (parseData instanceof HtmlParseData) {
+					HtmlParseData htmlParseData = (HtmlParseData) parseData;
+					List<WebURL> komsular = new ArrayList<WebURL>();
+					int maxCrawlDepth = myController.getConfig().getMaxDepthOfCrawling();
+					for (WebURL webURL : htmlParseData.getOutgoingUrls()) {
+						webURL.setParentDocid(docid);
+						int newdocid = docIdServer.getDocId(webURL.getURL());
+						if (newdocid > 0) {
+							// This is not the first time that this Url is
+							// visited. So, we set the depth to a negative
+							// number.
+							webURL.setDepth((short) -1);
+							webURL.setDocid(newdocid);
+						} else {
+							webURL.setDocid(-1);
+							webURL.setDepth((short) (curURL.getDepth() + 1));
+							if (maxCrawlDepth == -1 || curURL.getDepth() < maxCrawlDepth) {
+								if (shouldVisit(webURL) && robotstxtServer.allows(webURL)) {
+									webURL.setDocid(docIdServer.getNewDocID(webURL.getURL()));
+									if(webURL.getStatus() == 0){
+										dfsPage(webURL);
+									}
+								}
+							}
+						}
+					}
+					//frontier.scheduleAll(toSchedule);
+					visit(page);
+					curURL.setStatus(2);
+				}
+				
+			}
+		}
+		return 0;
+	}
 	private int processPage(WebURL curURL) {
 		if (curURL == null) {
 			return -1;
@@ -318,5 +368,5 @@ public class WebCrawler implements Runnable {
 	public String getSchedulingType() {
 		return this.schedulingtype;
 	}
-
+	
 }

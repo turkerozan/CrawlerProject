@@ -11,7 +11,7 @@ import java.util.List;
  * @author Yasser Ganjisaffar <lastname at gmail dot com>
  */
 public class WorkQueues {
-
+	public short depthCalculator = 1;
 	protected Database urlsDB = null;
 	protected Environment env;
 
@@ -117,22 +117,15 @@ public class WorkQueues {
 	}
 
 	public void put(WebURL url) throws DatabaseException {
+		
 		byte[] keyData = Util.int2ByteArray(url.getDocid());
-		// System.out.println("WorkQues.put = " + url.getDocid());
+		//System.out.println("WorkQues.put = " + url.getDocid());
 		DatabaseEntry value = new DatabaseEntry();
 		webURLBinding.objectToEntry(url, value);
 		Transaction txn;
-		if (resumable) {
-			txn = env.beginTransaction(null, null);
-		} else {
-			txn = null;
-		}
+		txn = null;
 		urlsDB.put(txn, new DatabaseEntry(keyData), value);
-		if (resumable) {
-			if (txn != null) {
-				txn.commit();
-			}
-		}
+		
 	}
 
 	public long getLength() {

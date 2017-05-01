@@ -36,7 +36,7 @@ public class BasicCrawler extends WebCrawler {
 		System.out.println("Docid: " + docid);
 		System.out.println("URL: " + url);
 		System.out.println("Docid of parent page: " + parentDocid);
-
+		System.out.println("URL depth == " + page.getWebURL().getDepth());
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
 			String text = htmlParseData.getText();

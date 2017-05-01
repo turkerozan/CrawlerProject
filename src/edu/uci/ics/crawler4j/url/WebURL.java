@@ -36,15 +36,20 @@ public class WebURL implements Serializable {
 	private int docid;
 	private int parentDocid;
 	private short depth;
-
+	private int status = 0;
 	public int getDocid() {
 		return docid;
 	}
-
+	public int getStatus(){
+		return status;
+	}
+	public void setStatus(int status){
+		this.status = status;
+	}
 	public void setDocid(int docid) {
 		this.docid = docid;
 	}
-
+	
 	public String getURL() {
 		return url;
 	}

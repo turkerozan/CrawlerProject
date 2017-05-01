@@ -26,7 +26,7 @@ public class Frontier extends Configurable {
 	protected long scheduledPages;
 
 	protected DocIDServer docIdServer;
-
+	
 	protected Counters counters;
 
 	public Frontier(Environment env, CrawlConfig config, DocIDServer docIdServer) {
@@ -41,15 +41,14 @@ public class Frontier extends Configurable {
 				long numPreviouslyInProcessPages = inProcessPages.getLength();
 				if (numPreviouslyInProcessPages > 0) {
 					logger.info("Rescheduling " + numPreviouslyInProcessPages + " URLs from previous crawl.");
-					System.out.println("Frontier.java - Frontier (...) - Rescheduling " + numPreviouslyInProcessPages
-							+ " URLs from previous crawl.");
+					System.out.println("Frontier.java - Frontier (...) - Rescheduling " + numPreviouslyInProcessPages + " URLs from previous crawl.");
 					scheduledPages -= numPreviouslyInProcessPages;
 					while (true) {
 						List<WebURL> urls = inProcessPages.get(100);
 						if (urls.size() == 0) {
-							break;
-						}
-
+                            break;
+                        }
+						
 						scheduleAll(urls);
 						inProcessPages.delete(urls.size());
 					}
@@ -73,6 +72,7 @@ public class Frontier extends Configurable {
 					break;
 				}
 				try {
+					System.out.println("Schedule All : " + url.getDocid());
 					workQueues.put(url);
 					newScheduledPage++;
 				} catch (DatabaseException e) {
@@ -81,8 +81,8 @@ public class Frontier extends Configurable {
 			}
 			if (newScheduledPage > 0) {
 				scheduledPages += newScheduledPage;
-				counters.increment(Counters.ReservedCounterNames.SCHEDULED_PAGES, newScheduledPage);
-			}
+				counters.increment(Counters.ReservedCounterNames.SCHEDULED_PAGES, newScheduledPage);	
+			}			
 			synchronized (waitingList) {
 				waitingList.notifyAll();
 			}
@@ -93,8 +93,9 @@ public class Frontier extends Configurable {
 		int maxPagesToFetch = config.getMaxPagesToFetch();
 		synchronized (mutex) {
 			try {
-				if (maxPagesToFetch < 0 || scheduledPages < maxPagesToFetch) {
-					workQueues.put(url);
+				if (maxPagesToFetch < 0 || scheduledPages < maxPagesToFetch) {	
+				    workQueues.put(url); 
+				    System.out.println("Schedule : " + url.getDocid());
 					scheduledPages++;
 					counters.increment(Counters.ReservedCounterNames.SCHEDULED_PAGES);
 				}
@@ -115,7 +116,7 @@ public class Frontier extends Configurable {
 					workQueues.delete(curResults.size());
 					if (inProcessPages != null) {
 						for (WebURL curPage : curResults) {
-							inProcessPages.put(curPage); // default
+							    	inProcessPages.put(curPage); //default 	
 						}
 					}
 					result.addAll(curResults);
@@ -155,7 +156,7 @@ public class Frontier extends Configurable {
 	public long getNumberOfAssignedPages() {
 		return inProcessPages.getLength();
 	}
-
+	
 	public long getNumberOfProcessedPages() {
 		return counters.getValue(ReservedCounterNames.PROCESSED_PAGES);
 	}
@@ -163,7 +164,7 @@ public class Frontier extends Configurable {
 	public void sync() {
 		workQueues.sync();
 		docIdServer.sync();
-		counters.sync();
+        counters.sync();
 	}
 
 	public boolean isFinished() {
@@ -173,7 +174,7 @@ public class Frontier extends Configurable {
 	public void close() {
 		sync();
 		workQueues.close();
-		counters.close();
+        counters.close();
 	}
 
 	public void finish() {
