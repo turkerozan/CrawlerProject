@@ -179,6 +179,7 @@ public class WebCrawler implements Runnable {
 				for (WebURL curURL : assignedURLs) {
 					if (curURL != null) {
 						dfsPage(curURL);
+						//processPage(curURL);
 						System.out.println("Processed : " + curURL.getDocid());
 						frontier.setProcessed(curURL);
 					}
@@ -219,8 +220,9 @@ public class WebCrawler implements Runnable {
 		if (curURL == null) {
 			return -1;
 		}
-		if(curURL.getDepth() == myController.getConfig().getMaxDepthOfCrawling()){
+		if(curURL.getDepth() == myController.getConfig().getMaxDepthOfCrawling() +1){
 			System.out.println("We hit the bumb");
+			return -1;
 		}
 		else{
 			curURL.setStatus(1);

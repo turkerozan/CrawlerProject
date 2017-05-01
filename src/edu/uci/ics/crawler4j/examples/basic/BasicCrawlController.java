@@ -48,7 +48,7 @@ public class BasicCrawlController {
 		 * You can set the maximum crawl depth here. The default value is -1 for
 		 * unlimited depth
 		 */
-		config.setMaxDepthOfCrawling(10);
+		config.setMaxDepthOfCrawling(5);
 
 		/*
 		 * You can set the maximum number of pages to crawl. The default value
