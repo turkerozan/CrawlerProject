@@ -240,9 +240,6 @@ public class WebCrawler implements Runnable {
 						webURL.setParentDocid(docid);
 						int newdocid = docIdServer.getDocId(webURL.getURL());
 						if (newdocid > 0) {
-							// This is not the first time that this Url is
-							// visited. So, we set the depth to a negative
-							// number.
 							webURL.setDepth((short) -1);
 							webURL.setDocid(newdocid);
 						} else {
