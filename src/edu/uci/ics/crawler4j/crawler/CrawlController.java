@@ -41,7 +41,7 @@ public class CrawlController extends Configurable {
 	 * Is the crawling of this session finished?
 	 */
 	protected boolean finished;
-
+	
 	/**
 	 * Is the crawling session set to 'shutdown'. Crawler threads monitor this
 	 * flag and when it is set they will no longer process new pages.
@@ -52,7 +52,7 @@ public class CrawlController extends Configurable {
 	protected RobotstxtServer robotstxtServer;
 	protected Frontier frontier;
 	protected DocIDServer docIdServer;
-
+	public int choice;
 	protected final Object waitingLock = new Object();
 
 	public CrawlController(CrawlConfig config, PageFetcher pageFetcher, RobotstxtServer robotstxtServer)
@@ -241,6 +241,12 @@ public class CrawlController extends Configurable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	public void setChoice(int choice){
+		this.choice = choice;
+	}
+	public int getChoice() {
+		return choice;
 	}
 
 	/**

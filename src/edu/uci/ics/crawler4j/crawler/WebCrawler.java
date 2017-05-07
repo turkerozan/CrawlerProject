@@ -178,8 +178,10 @@ public class WebCrawler implements Runnable {
 			} else {
 				for (WebURL curURL : assignedURLs) {
 					if (curURL != null) {
-						dfsPage(curURL);
-						//processPage(curURL);
+						if(myController.getChoice()==1){
+						dfsPage(curURL);}
+						else{
+						processPage(curURL);}
 						System.out.println("Processed : " + curURL.getDocid());
 						frontier.setProcessed(curURL);
 					}

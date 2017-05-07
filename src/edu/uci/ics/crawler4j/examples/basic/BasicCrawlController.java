@@ -5,7 +5,7 @@ import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
-
+import java.util.Scanner;
 public class BasicCrawlController {
 
 	public static void main(String[] args) throws Exception {
@@ -17,7 +17,11 @@ public class BasicCrawlController {
 		// threads)");
 		// return;
 		// }
-
+		System.out.println("Please choose crawler setting");
+		System.out.println("1 for DFS, 2 for BFS");
+		Scanner scanner = new Scanner(System.in);
+		int choose = scanner.nextInt();
+		
 		args = new String[2];
 		args[0] = "./data";
 		args[1] = "1";
@@ -35,9 +39,9 @@ public class BasicCrawlController {
 		int numberOfCrawlers = Integer.parseInt(args[1]);
 
 		CrawlConfig config = new CrawlConfig();
-
+		
 		config.setCrawlStorageFolder(crawlStorageFolder);
-
+		
 		/*
 		 * Be polite: Make sure that we don't send more than 5 requests per
 		 * second (200 milliseconds between requests).
@@ -72,7 +76,7 @@ public class BasicCrawlController {
 		RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
 		RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
 		CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
-
+		controller.setChoice(choose);
 		/*
 		 * For each crawl, you need to add some seed urls. These are the first
 		 * URLs that are fetched and then the crawler starts following links
