@@ -36,6 +36,10 @@ public class WebURL implements Serializable {
 	private int docid;
 	private int parentDocid;
 	private short depth;
+	//Ozan
+	//Eger ziyaret edilmemsse, 0
+	//Ziyaret ediliyorsa 1,
+	//ziyaret edilmisse 2
 	private int status = 0;
 	public int getDocid() {
 		return docid;

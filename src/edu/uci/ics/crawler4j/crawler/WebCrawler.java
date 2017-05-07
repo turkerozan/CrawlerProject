@@ -221,7 +221,7 @@ public class WebCrawler implements Runnable {
 			return -1;
 		}
 		if(curURL.getDepth() == myController.getConfig().getMaxDepthOfCrawling() +1){
-			System.out.println("We hit the bumb");
+			System.out.println("We hit the limit of max depth");
 			return -1;
 		}
 		else{
